@@ -1,4 +1,5 @@
-import { postRouter } from "~/server/api/routers/post";
+//used for creating api route endpoints to use in our client side typescript
+import { postsRouter } from "~/server/api/routers/post";
 import { createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -7,7 +8,7 @@ import { createTRPCRouter } from "~/server/api/trpc";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  post: postRouter,
+  post: postsRouter,
 });
 
 // export type definition of API

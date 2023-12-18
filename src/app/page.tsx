@@ -1,34 +1,44 @@
 import Link from "next/link";
 
-import { CreatePost } from "~/app/_components/create-post";
-import { api } from "~/trpc/server";
-import { UserButton } from "@clerk/nextjs";
+import  { api }  from "~/trpc/server";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { User } from "@clerk/nextjs/server";
 
-export default async function Home() {
-  const hello = await api.post.hello.query({ text: "from tRPC" });
-
+function CreatePostWizard() {
+  // Your component logic
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-        {/* Clerk profile button */}
-        <div className="h-screen">
-          <UserButton afterSignOutUrl="/"/>
-        </div>
-    </main>
+    <>
+    <UserButton afterSignOutUrl="/"/>
+    <input className="bg-transparent w-full" placeholder="post something.."></input>
+    </>
   );
 }
 
-async function CrudShowcase() {
-  const latestPost = await api.post.getLatest.query();
-
+export default async function Home() {
+  let response;
+  try {
+    response = (await api.post.getAll.query())
+  } catch (e) {
+    console.log(e)
+  }
+  console.log(response)
   return (
-    <div className="w-full max-w-xs">
-      {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
-
-      <CreatePost />
-    </div>
+    <main className="flex justify-center h-screen">
+      {/* Clerk profile button */}
+      <div className="w-full md:max-w-2xl border-x border-slate-400">
+        <div className="w-full p-2 flex flex-column gap-4">
+          <CreatePostWizard/>
+        </div>
+        <div>
+        {response?.map((post, author) => (
+          <>
+          <div>{post.post.content}</div>
+          <img src={post.author.imageUrl}/>
+          <div>{post.author.username}</div>
+          </>
+        ))}
+        </div>
+      </div>
+    </main>
   );
 }
