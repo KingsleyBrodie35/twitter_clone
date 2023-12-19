@@ -9,7 +9,7 @@ import { TRPCError } from "@trpc/server";
 
 //filter information we can access in front end for users
 const filterUserClientData = (user: User) => {
-  return {id: user.id, username: user.username, imageUrl: user.imageUrl}
+  return {id: user.id, firstName: user.firstName, lastName: user.lastName ,imageUrl: user.imageUrl}
 }
 
 export const postsRouter = createTRPCRouter({
