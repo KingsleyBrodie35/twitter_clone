@@ -1,14 +1,16 @@
 "use client";
-import { useState } from 'react';
-import  { api }  from "~/trpc/server";
 import { UserButton, useUser } from "@clerk/nextjs";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
 import { Spinner } from "~/app/_components/spinner"
+import { api } from "~/trpc/server";
 import { RouterOutputs } from '~/trpc/shared';
+import { trpc } from "~/utils/trpc";
+
 
 dayjs.extend(relativeTime);
 
+//Have to implement Author interface
 function CreatePostWizard() {
   // Your component logic
   return (
@@ -37,16 +39,11 @@ function PostView(props: PostWithUser) {
   )
 }
 
-export default async function Home() {
-  let response;
-  let isLoading;
-  try {    
-    response = await api.post.getAll.query()
-  } catch (e) {
-    console.log(e)
-  } finally {
-    // isPostLoading(false)
-  }
+export default function Home() {
+  const { data, isLoading, error } = trpc.post.getAll.useQuery()
+  
+  if (isLoading) return <Spinner></Spinner>
+   
   return (
     <main className="flex justify-center h-screen">
       {/* Clerk profile button */}
@@ -55,16 +52,10 @@ export default async function Home() {
           <CreatePostWizard/>
         </div>
         <div className="gap-4">
-        {/* {isLoading? (
-          <Spinner/>
-        ) : (
-          <p>loaded</p>
-        )} */}
-        {response?.map((post) => (
+        {data?.map((post) => (
           <PostView {...post}></PostView>
         ))}
         </div>
-        
       </div>
     </main>
   );
