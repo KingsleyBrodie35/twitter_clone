@@ -10,4 +10,8 @@ export const Spinner = function() {
     )
 }
 
-export default Spinner
+export const LoadingSpinner = () => {
+    return <div className="absolute top-0 right-0 w-screen h-screen flex justify-center align-center items-center">
+        <Spinner></Spinner>
+    </div>
+}
